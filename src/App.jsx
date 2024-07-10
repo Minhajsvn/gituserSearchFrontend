@@ -1,11 +1,13 @@
 import { useState } from 'react'
 import './App.css'
 import axios from 'axios';
+import RepoDetails from './components/RepoDetails';
 
 function App() {
   const [username, setUsername] = useState('');
   const [userData, setUserData] = useState(null);
   const [reposData, setReposData] = useState([]);
+  const [selectedRepo, setSelectRepo] = useState(null);
 
   const handleInputChange = (e) => {
     setUsername(e.target.value);
@@ -36,6 +38,18 @@ function App() {
         console.error('Error fetching data:', error);
       }
     }
+  }
+
+  const handleRepoClick = (repo) => {
+    setSelectRepo(repo);
+  };
+
+  const handleBack = () => {
+    setSelectRepo(null);
+  }
+
+  if(selectedRepo){
+    return <RepoDetails repo={selectedRepo} onBack={handleBack} />
   }
 
   return (
@@ -69,9 +83,9 @@ function App() {
                 <li key={repo.id} style={styles.repoItem} >
                   <img src={repo.owner.avatar_url} alt="avatar" style={styles.avatar} />
                   <div style={styles.repoText}>
-                  <a href={repo.html_url} target='_blank' rel='noopener noreferrer' style={styles.repoLink}>
-                    {repo.name}
-                  </a>
+                  <button onClick={() => handleRepoClick(repo)} style={styles.repoLink}>
+                  {repo.name}
+                  </button>
                   <p>{repo.description}</p>
                   </div>
                 </li>
